@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cookbok</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  </head>
+  <body>
+
+
+
+
+
+    <div class="ui inverted blue menu">
+      <div class='item'>
+
+        <h2 class="ui header">
+          <div class="content">
+            Cookbook
+          </div>
+          <div class="sub header">
+            Create Recipes
+          </div>
+        </h2>
+
+      </div>
+      <div class="item">
+        <button id="add-new-recipe" class="ui right floated button">Add Recipe</button>
+      </div>
+    </div>
+
+<div class="ui basic segment">
+
+    <div id="new-recipe-form" class="ui segment" style="display: none;">
+      <div class="ui form">
+
+          <div class="field">
+            <label>Name</label>
+            <input placeholder="Enter recipe name here..." type="text" id="recipe-name">
+          </div>
+          <div class="grouped fields" id="ingredients-checkbox"></div>
+
+      <div><input id="new-ingredient-name" placeholder="add ingredient" type="text">
+        <button id="add-new-ingredient" type="button" name="button" class="ui submit button">Add</button>
+      </div>
+
+        <div id="submit-new-recipe" class="ui submit button">Submit</div>
+      </div>
+  </div>
+
+  <div class="ui four column grid" id="recipes"></div>
+</div>
+
+  <script src="src/recipe_ingredient.js"></script>
+  <script src="src/ingredient.js"></script>
+  <script src="src/recipe.js"></script>
+  <script src="src/app.js"></script>
+  <script src="src/index.js"></script>
+
+  </body>
+</html>
