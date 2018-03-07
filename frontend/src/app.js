@@ -2,6 +2,7 @@ class App {
   constructor(){
     this.recipes = []
     this.ingredients = []
+    this.includedSearchIngredients = []
     this.recipesContainer = document.getElementById('recipes')
     this.addRecipeButton = document.getElementById('add-new-recipe')
     this.newRecipeForm = document.getElementById('new-recipe-form')
@@ -16,6 +17,9 @@ class App {
     this.sortDateButton = document.getElementById('sort-date')
     this.sortNameButton = document.getElementById('sort-a-z')
     this.recipeSearchBar = document.getElementById('search-recipes')
+    this.addIcon = document.getElementById('add-icon')
+    this.includeIngredientField = document.getElementById("include-ingredient-field")
+    this.includedIngredientsList = document.getElementById('included-ingredients')
     this.addEventListeners()
     this.fetchIngredients()
   }
@@ -58,6 +62,13 @@ class App {
     this.recipeSearchBar.addEventListener('keyup', event => {
       this.filterRecipes()
     })
+    this.addIcon.addEventListener('click', event => {
+      this.addIngredientToIncludedList(event)
+    })
+    this.includeIngredientField.addEventListener('keyup', event => {
+      if (event.keyCode === 13){
+        this.addIngredientToIncludedList(event)      }
+    });
   }
 
   createRecipeObject(){
@@ -139,6 +150,22 @@ class App {
         return 0;
       }
     })
+  }
+
+  addIngredientToIncludedList(event){
+    let html = `
+      <div class="ui button">
+        <i class="trash icon"></i> ${this.includeIngredientField.value}
+      <div>
+    `
+    this.includedIngredientsList.innerHTML += html
+    this.includedSearchIngredients.push(this.includeIngredientField.value)
+    this.includeIngredientField.value = ''
+    let trashIcons = document.querySelectorAll(".trash.icon")
+    trashIcons.forEach(icon => icon.addEventListener('click', event => {
+        event.target.parentNode.remove()
+      })
+    )
   }
 
   filterRecipes(){

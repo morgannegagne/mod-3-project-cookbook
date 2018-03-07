@@ -31,6 +31,8 @@ class Recipe{
             <div class="ui fluid card">
               <div class="content"><a class="header">${this.name}</a></div>
               <ul id="ingredient-list"> ${this.renderIngredients().join('')}</ul>
+              <h4 dividing header style="padding-left: 5px"> Directions </h4>
+              <p style="padding-left: 10px"> ${this.directions} </p>
               <div class="extra content">
                 <div class="ui two buttons">
                   <div data-id="${this.id}" class="ui basic green button edit-button">Edit</div>
