@@ -1,8 +1,10 @@
 class Recipe{
 
-  constructor({id, name, created_at}){
+  constructor({id, name, created_at, url, directions}){
     this.name = name
     this.id = id
+    this.directions = directions
+    this.url = url  
     this.created_at = created_at.split('T')[0]
     this.recipeIngredients = []
   }
@@ -16,7 +18,7 @@ class Recipe{
             <div class="ui fluid card">
 
               <div class="image">
-                <img src="#">
+                <img src="${this.url}">
               </div>
               <div class="content">
                 <a class="header">${this.name}</a>
