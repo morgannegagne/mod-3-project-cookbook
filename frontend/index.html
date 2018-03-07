@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Cookbok</title>
+    <title>Cookbook</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css"/>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   </head>
@@ -45,7 +45,6 @@
     </div> -->
 
 <div class="ui basic segment">
-
     <div id="new-recipe-form" class="ui segment" style="display: none;">
       <div class="ui form">
 
@@ -71,6 +70,12 @@
         <div data-id="" id="edit-recipe-button" class="ui edit button" style="">Edit</div>
       </div>
   </div>
+
+<!-- Dividing header to sort recipes alphabetically or by date created -->
+  <div class="ui right aligned dividing header" style="padding-right: 20px">
+    Sort | <a id="sort-a-z" style="font-weight: normal"> A-Z </a> | <a id="sort-date" style="font-weight: normal">Date</a>
+  </div>
+<!-- end dividing header -->
 
   <div class="ui four column grid" id="recipes"></div>
 </div>
