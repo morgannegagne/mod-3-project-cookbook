@@ -97,6 +97,7 @@ class App {
   createRecipes(recipesJSON){
     recipesJSON.forEach(recipeJSON => {
       let recipe = new Recipe(recipeJSON)
+      console.log(recipe)
       let ingredients = recipeJSON.recipe_ingredients
       ingredients.forEach(ingredientJSON => {
         let ingredient = new RecipeIngredient(ingredientJSON)
@@ -105,13 +106,6 @@ class App {
       this.recipes.push(recipe)
     })
     this.render()
-    let cardDivs = document.querySelectorAll('.recipe-card')
-    cardDivs.forEach(card => {
-      card.addEventListener('click', event => {
-
-
-      })
-    })
   }
 
   showEditRecipeForm(event){

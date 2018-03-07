@@ -1,8 +1,9 @@
 class Recipe{
 
-  constructor({id, name}){
+  constructor({id, name, created_at}){
     this.name = name
     this.id = id
+    this.created_at = created_at.split('T')[0]
     this.recipeIngredients = []
   }
 
