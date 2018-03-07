@@ -40,19 +40,6 @@ class Recipe{
       </div>
     `
   }
-  //
-  // renderIngredientsCard(){
-  //   return `<div class="column">
-  //     <div class="ui fluid card">
-  //
-  //       <div class="content">
-  //         <a class="header">${this.name}</a>
-  //       </div>
-  //       <ul id="ingredient-list"> ${this.renderIngredients().join('')}</ul>
-  //     </div>
-  //   </div>
-  // `
-  // }
 
   renderIngredients(){
     return this.recipeIngredients.map(ri => {return ri.render()})

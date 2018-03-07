@@ -13,6 +13,8 @@ class App {
     this.addNewIngredient = document.getElementById('add-new-ingredient')
     this.newIngredientName = document.getElementById('new-ingredient-name')
     this.editRecipeButton = document.getElementById('edit-recipe-button')
+    this.sortDateButton = document.getElementById('sort-date')
+    this.sortNameButton = document.getElementById('sort-a-z')
     this.addEventListeners()
     this.fetchIngredients()
   }
@@ -40,6 +42,17 @@ class App {
     this.addNewIngredient.addEventListener('click', event=>{
       this.createNewIngredient(event)
     })
+    this.sortNameButton.addEventListener('click', event=>{
+      event.target.style["font-weight"] = "bold"
+      this.sortDateButton["font-weight"] = "normal"
+      this.sortRecipesAlphabetically()
+      this.fetchRecipes()
+    })
+    this.sortDateButton.addEventListener('click', event=>{
+      event.target.style["font-weight"] = "bold"
+      this.sortNameButton["font-weight"] = "normal"
+      // sort by date function
+    })
   }
 
   createRecipeObject(){
@@ -60,7 +73,6 @@ class App {
         ingredientObj.amount = amountInput.value
         ingredientObj.measure = measureInput.value
         checkedValues.push(ingredientObj)
-
       }
     }
     return { "recipe": {name: name, ingredients: checkedValues, url: url, directions: directions} }
@@ -94,6 +106,20 @@ class App {
       .then(json => this.createRecipes(json))
   }
 
+  sortRecipesAlphabetically(){
+    this.recipes = this.recipes.sort((a, b) => {
+      let recipeA = a.name.toUpperCase()
+      let recipeB = b.name.toUpperCase()
+      if (recipeA < recipeB){
+        return -1;
+      } else if (recipeA > recipeB){
+        return 1;
+      } else {
+        return 0;
+      }
+    })
+  }
+
   createRecipes(recipesJSON){
     recipesJSON.forEach(recipeJSON => {
       let recipe = new Recipe(recipeJSON)
@@ -104,14 +130,9 @@ class App {
       })
       this.recipes.push(recipe)
     })
+    this.sortRecipesAlphabetically()
     this.render()
     let cardDivs = document.querySelectorAll('.recipe-card')
-    cardDivs.forEach(card => {
-      card.addEventListener('click', event => {
-
-
-      })
-    })
   }
 
   showEditRecipeForm(event){
@@ -165,9 +186,7 @@ class App {
 
   //Create a recipe card from array of Objs
   renderRecipes(){
-    return this.recipes.map(recipe => {
-      return recipe.render()
-    })
+    return this.recipes.map(recipe => {return recipe.render()})
   }
 
   fetchIngredients(){
@@ -182,7 +201,23 @@ class App {
       let ingredient = new Ingredient(ingredientJSON)
       this.ingredients.push(ingredient)
     })
+    this.sortIngredientsAlphabetically()
     this.renderIngredients()
+  }
+
+  sortIngredientsAlphabetically(){
+    this.ingredients = this.ingredients.sort((a, b) => {
+      let ingredientA = a.name.toUpperCase();
+      let ingredientB = b.name.toUpperCase();
+
+      if (ingredientA < ingredientB) {
+        return -1;
+      } else if (ingredientA > ingredientB) {
+        return 1;
+      } else {
+        return 0
+      }
+    });
   }
 
   createNewIngredient(event){
