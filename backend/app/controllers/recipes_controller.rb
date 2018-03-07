@@ -25,7 +25,14 @@ class RecipesController < ApplicationController
   end
 
   def update
-
+    @recipe = Recipe.find(params[:id])
+    @recipe.update(recipe_params)
+    @recipe.recipe_ingredients.destroy_all
+    ingredients = params[:recipe][:ingredients]
+    ingredients.each do |ingredient|
+      RecipeIngredient.create(recipe_id: @recipe.id, ingredient_id: ingredient[:id], amount: ingredient[:amount], measure: ingredient[:measure])
+    end
+    render json: @recipe
   end
 
   def destroy
@@ -37,7 +44,7 @@ class RecipesController < ApplicationController
   private
 
   def recipe_params
-    params.require(:recipe).permit(:name, :ingredients)
+    params.require(:recipe).permit(:name, :ingredients, :url, :directions)
   end
 
 

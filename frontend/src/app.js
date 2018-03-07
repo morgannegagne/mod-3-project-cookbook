@@ -8,9 +8,13 @@ class App {
     this.ingredientsCheckbox = document.getElementById('ingredients-checkbox')
     this.submitRecipeButton = document.getElementById('submit-new-recipe')
     this.recipeNameField = document.getElementById('recipe-name')
+    this.recipeDirectionsField = document.getElementById('recipe-directions')
+    this.recipeUrlField = document.getElementById('recipe-url')
     this.addNewIngredient = document.getElementById('add-new-ingredient')
     this.newIngredientName = document.getElementById('new-ingredient-name')
+    this.editRecipeButton = document.getElementById('edit-recipe-button')
     this.addEventListeners()
+    this.fetchIngredients()
   }
 
   addEventListeners(){
@@ -18,22 +22,31 @@ class App {
       if (this.newRecipeForm.style.display === "none"){
         this.ingredients = []
         this.newRecipeForm.style.display = "block"
+        this.submitRecipeButton.style.display = ""
+        this.editRecipeButton.style.display = "none"
         this.fetchIngredients()
 
       } else {
+        this.recipeNameField.value = ""
         this.newRecipeForm.style.display = "none"
       }
     })
     this.submitRecipeButton.addEventListener('click', event=>{
       this.saveRecipe(event)
     })
+    this.editRecipeButton.addEventListener('click', event=>{
+      this.patchRecipe(event)
+    })
     this.addNewIngredient.addEventListener('click', event=>{
       this.createNewIngredient(event)
     })
   }
 
-  saveRecipe(event){
+  createRecipeObject(){
     let name = this.recipeNameField.value
+    let url = this.recipeUrlField.value
+    let directions = this.recipeDirectionsField.value
+
     let inputs = this.ingredientsCheckbox.children
     let checkedValues=[]
     for (let i = 0; i < inputs.length; i++){
@@ -43,17 +56,18 @@ class App {
         let id = checkbox.dataset.id
         let amountInput = document.getElementById(`amount-${id}`)
         let measureInput = document.getElementById(`measure-${id}`)
-        // console.log(amountInput.value, measureInput.value)
-
         ingredientObj.id = id
         ingredientObj.amount = amountInput.value
         ingredientObj.measure = measureInput.value
-        // console.log(ingredientObj)
         checkedValues.push(ingredientObj)
 
       }
     }
-    let newRecipeObj = { "recipe": {name: name, ingredients: checkedValues} }
+    return { "recipe": {name: name, ingredients: checkedValues, url: url, directions: directions} }
+  }
+
+  saveRecipe(event){
+    let newRecipeObj = this.createRecipeObject()
     console.log(newRecipeObj)
     fetch('http://localhost:3000/recipes', {
       method: "post",
@@ -65,7 +79,6 @@ class App {
     })
       .then(res => res.json())
       .then(json => {
-        console.log(json)
         this.recipes = []
         this.ingredients =[]
         this.newRecipeForm.style.display = "none"
@@ -99,6 +112,55 @@ class App {
 
       })
     })
+  }
+
+  showEditRecipeForm(event){
+    let id = event.target.dataset.id
+    this.editRecipeButton.dataset.id = id
+    if (this.newRecipeForm.style.display === "none"){
+      this.submitRecipeButton.style.display = "none"
+      this.editRecipeButton.style.display = ""
+      this.newRecipeForm.style.display = "block"
+      this.renderIngredients()
+      let recipe = this.recipes.find(recipe => {return recipe.id == id})
+      this.recipeNameField.value = recipe.name
+      this.recipeDirectionsField.value = recipe.directions
+      this.recipeUrlField.value = recipe.url
+      let recipeIngredients = recipe.recipeIngredients
+      let checkboxes = document.querySelectorAll('.ingredient-checkbox')
+      checkboxes.forEach(checkbox => {
+        recipeIngredients.forEach(ri => {
+          if (ri.ingredient_id == checkbox.dataset.id){
+            checkbox.checked = true
+            let div = document.getElementById(`amounts-measures-${ri.ingredient_id}`)
+            checkbox.checked ? div.style.display = "block" : div.style.display = "none"
+            document.getElementById(`amount-${ri.ingredient_id}`).value = ri.amount
+            document.getElementById(`measure-${ri.ingredient_id}`).value = ri.measure
+          }
+        })
+      })
+    } else {
+      this.newRecipeForm.style.display = "none"
+    }
+  }
+
+  patchRecipe(event){
+    let recipeObj = this.createRecipeObject()
+    let id = event.target.dataset.id
+    console.log(recipeObj)
+    fetch(`http://localhost:3000/recipes/${id}`,{
+      method: 'PATCH',
+      headers: {
+        "Content-Type": "application/json",
+        Accepts: "application/json"
+      },
+      body: JSON.stringify(recipeObj)
+    })
+      .then(res => res.json())
+      .then(json => {
+        this.newRecipeForm.style.display = "none"
+        this.fetchRecipes()
+      })
   }
 
   //Create a recipe card from array of Objs
@@ -155,7 +217,6 @@ class App {
   //Create an IngrCard
   renderRecipeIngredientCards(){
     return this.recipes.map(recipe => {
-      // console.log(recipe.renderIngredientsCard())
       return recipe.renderIngredientsCard()})
   }
 
@@ -172,6 +233,11 @@ class App {
         .then(res => res.json())
         .then(json => this.fetchRecipes())
       })
+    })
+    allEditButtons.forEach(editButton => {
+      editButton.addEventListener("click", event => {
+        this.showEditRecipeForm(event)
+        })
     })
   }
 
