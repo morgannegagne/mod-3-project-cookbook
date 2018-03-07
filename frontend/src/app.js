@@ -15,6 +15,7 @@ class App {
     this.editRecipeButton = document.getElementById('edit-recipe-button')
     this.sortDateButton = document.getElementById('sort-date')
     this.sortNameButton = document.getElementById('sort-a-z')
+    this.recipeSearchBar = document.getElementById('search-recipes')
     this.addEventListeners()
     this.fetchIngredients()
   }
@@ -54,6 +55,9 @@ class App {
       this.sortRecipesByDate()
       this.render()
     })
+    this.recipeSearchBar.addEventListener('keyup', event => {
+      this.filterRecipes()
+    })
   }
 
   createRecipeObject(){
@@ -76,6 +80,9 @@ class App {
         checkedValues.push(ingredientObj)
       }
     }
+    this.recipeNameField.value = ""
+    this.recipeUrlField.value = ""
+    this.recipeDirectionsField.value = ""
     return { "recipe": {name: name, ingredients: checkedValues, url: url, directions: directions} }
   }
 
@@ -130,6 +137,19 @@ class App {
         return -1;
       } else {
         return 0;
+      }
+    })
+  }
+
+  filterRecipes(){
+    let searchTerm = this.recipeSearchBar.value.toLowerCase()
+    let recipeCards = document.querySelectorAll('.recipe-card')
+
+    recipeCards.forEach(recipeCard => {
+      if (recipeCard.dataset.name.toLowerCase().indexOf(searchTerm) > -1){
+        recipeCard.style.display = ""
+      } else {
+        recipeCard.style.display = "none"
       }
     })
   }

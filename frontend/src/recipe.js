@@ -4,14 +4,14 @@ class Recipe{
     this.name = name
     this.id = id
     this.directions = directions
-    this.url = url  
+    this.url = url
     this.created_at = created_at.split('T')[0]
     this.recipeIngredients = []
   }
 
   render(){
     return `
-      <div id="recipe-${this.id}" class="column recipe-card">
+      <div id="recipe-${this.id}" data-id="${this.id}" data-name="${this.name}" class="column recipe-card" style="">
         <div class="flipper">
 
           <div class="front">
