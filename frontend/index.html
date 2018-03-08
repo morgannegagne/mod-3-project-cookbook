@@ -11,9 +11,62 @@
   </head>
   <body>
 
-    <script>
+    <!-- <script>
        $('.ui.checkbox').checkbox();
-     </script>
+       $('.ui.modal').modal('show');
+     </script> -->
+
+
+     <div class="ui modal">
+  <i class="close icon"></i>
+  <div class="header">
+    Create a recipe
+  </div>
+  <div class="image content">
+    <div class="ui medium image">
+      <img id="recipe_image_edit">
+
+    <div class="ui form">
+      <div class="field">
+        <label>Photo</label>
+        <input placeholder="Enter url here..." type="text" id="recipe-url">
+      </div>
+    </div>
+  </div>
+
+    <div class="description">
+      <div class="ui form">
+
+        <div class="field">
+          <label>Recipe Name</label>
+          <input placeholder="Enter recipe name here..." type="text" id="recipe-name">
+        </div>
+
+        <div class="field">
+          <label>Directions</label>
+          <textarea rows="2" placeholder="Enter directions here..." id="recipe-directions"></textarea>
+        </div>
+
+        <div class="field">
+          <div class="ui grid" id="ingredients-checkbox"></div>
+        </div>
+
+        <div class="field">
+          <div class="ui action input">
+            <input id="new-ingredient-name" placeholder="add ingredient" type="text">
+            <div id="add-new-ingredient" type="button" name="button" class="ui submit button">Add</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="actions">
+    <div id="submit-new-recipe" class="ui submit red button" style="">Submit</div>
+    <div data-id="" id="edit-recipe-button" class="ui edit yellow button" style="">Edit</div>
+    </div>
+  </div>
+</div>
 
 
 
@@ -24,23 +77,23 @@
 
 
 
-  <div class="ui huge menu borderless">
+  <div class="ui massive menu borderless">
 
-  <div class="item">
-    <i class="large leaf icon"></i>
-  </div>
-  <div class="item">
-    <h2 class="ui header">Cookbook</h2>
-  </div>
+    <!-- <div class="item">
+      <i class="large leaf icon"></i>
+    </div> -->
+    <div class="item">
+      <h2 class="ui header">Cookbook</h2>
+    </div>
 
           <!-- <div class="fitted item">
           </div> -->
 
-  <div class="right menu">
+  <!-- <div class="right menu"> -->
     <div class="item">
-      <a id="add-new-recipe" class="ui large red button">Add Recipe</a>
+      <a id="add-new-recipe" class="ui massive red button">Add Recipe</a>
     </div>
-  </div>
+  <!-- </div> -->
 
   </div>
 
@@ -62,14 +115,14 @@
         <button id="add-new-recipe" class="ui right floated button">Add Recipe</button>
       </div>
     </div> -->
-
+<!--
 <div class="ui basic segment">
   <div id="new-recipe-form" class="ui segment" style="display: none;">
     <div class="ui equal width grid">
 
       <div class="column">
         <div class="ui rounded image">
-          <img src="https://semantic-ui.com/images/wireframe/image.png">
+          <img id="recipe_image_edit" src="https://semantic-ui.com/images/wireframe/image.png">
         </div>
         <div class="ui form">
           <div class="field">
@@ -85,14 +138,14 @@
           <div class="field">
             <label>Name</label>
             <input placeholder="Enter recipe name here..." type="text" id="recipe-name">
-          </div>
+          </div> -->
 
         <!-- <div class="field">
         <label>Photo</label>
         <input placeholder="Enter url here..." type="text" id="recipe-url">
         </div> -->
 
-          <div class="field">
+          <!-- <div class="field">
             <label>Directions</label>
             <textarea rows="2" placeholder="Enter directions here..." id="recipe-directions"></textarea>
           </div>
@@ -115,7 +168,7 @@
       </div>
   </div>
 </div>
-</div>
+</div> -->
 
 <!-- Dividing header to sort recipes alphabetically or by date created -->
 <div class="ui basic segment">

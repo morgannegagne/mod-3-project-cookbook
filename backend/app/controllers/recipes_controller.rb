@@ -29,6 +29,7 @@ class RecipesController < ApplicationController
   end
 
   def update
+
     @recipe = Recipe.find(params[:id])
     @recipe.update(recipe_params)
     @recipe.recipe_ingredients.destroy_all

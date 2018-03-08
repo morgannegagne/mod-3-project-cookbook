@@ -14,6 +14,7 @@ class App {
     this.addNewIngredient = document.getElementById('add-new-ingredient')
     this.newIngredientName = document.getElementById('new-ingredient-name')
     this.editRecipeButton = document.getElementById('edit-recipe-button')
+    this.imageEditForm = document.getElementById('recipe_image_edit')
     this.sortDateButton = document.getElementById('sort-date')
     this.sortNameButton = document.getElementById('sort-a-z')
     this.recipeSearchBar = document.getElementById('search-recipes')
@@ -26,20 +27,27 @@ class App {
 
   addEventListeners(){
     this.addRecipeButton.addEventListener('click', event=>{
-      if (this.newRecipeForm.style.display === "none"){
-        this.ingredients = []
-        this.newRecipeForm.style.display = "block"
-        this.submitRecipeButton.style.display = ""
-        this.editRecipeButton.style.display = "none"
-        this.fetchIngredients()
-
-      } else {
-        this.recipeNameField.value = ""
-        this.newRecipeForm.style.display = "none"
-      }
+      this.submitRecipeButton.style.display = ""
+      this.editRecipeButton.style.display = "none"
+      $('.ui.modal').modal('show');
+      this.imageEditForm.src = "https://semantic-ui.com/images/wireframe/image.png"
+      this.recipeNameField.value = ""
+      this.recipeUrlField.value = ""
+      this.recipeDirectionsField.value = ""
+      this.fetchIngredients()
+      // if (this.newRecipeForm.style.display === "none"){
+      //   this.ingredients = []
+      //   this.newRecipeForm.style.display = "block"
+      //   this.submitRecipeButton.style.display = ""
+      //   this.editRecipeButton.style.display = "none"
+      //   this.fetchIngredients()
+      //
+      // } else {
+      //   this.recipeNameField.value = ""
+      //   this.newRecipeForm.style.display = "none"
+      // }
     })
     this.submitRecipeButton.addEventListener('click', event=>{
-      console.log(event.target)
       this.saveRecipe(event)
     })
     this.editRecipeButton.addEventListener('click', event=>{
@@ -103,7 +111,6 @@ class App {
 
   saveRecipe(event){
     let newRecipeObj = this.createRecipeObject()
-    console.log(newRecipeObj)
     fetch('http://localhost:3000/recipes', {
       method: "POST",
       headers: {
@@ -116,7 +123,7 @@ class App {
       .then(json => {
         this.recipes = []
         this.ingredients =[]
-        this.newRecipeForm.style.display = "none"
+        // this.newRecipeForm.style.display = "none"
         this.recipeNameField.value = ""
         this.fetchRecipes()
       })
@@ -212,6 +219,7 @@ class App {
     let searchTerm = this.recipeSearchBar.value.toLowerCase()
 
     document.querySelectorAll(".recipe-card").forEach(recipeCard => {
+      debugger;
         if (recipeCard.dataset.name.toLowerCase().indexOf(searchTerm) === -1){
           recipeCard.style.display = "none"
         } else {
@@ -238,10 +246,12 @@ class App {
   showEditRecipeForm(event){
     let id = event.target.dataset.id
     this.editRecipeButton.dataset.id = id
-    if (this.newRecipeForm.style.display === "none"){
+    // if (this.newRecipeForm.style.display === "none"){
+    $('.ui.modal').modal('show');
       this.submitRecipeButton.style.display = "none"
       this.editRecipeButton.style.display = ""
-      this.newRecipeForm.style.display = "block"
+      // this.newRecipeForm.style.display = "block"
+
       this.renderIngredients()
       let recipe = this.recipes.find(recipe => {return recipe.id == id})
       this.recipeNameField.value = recipe.name
@@ -249,6 +259,8 @@ class App {
       this.recipeUrlField.value = recipe.url
       let recipeIngredients = recipe.recipeIngredients
       let checkboxes = document.querySelectorAll('.ingredient-checkbox')
+      // let imageEditForm = document.getElementById('recipe_image_edit')
+      this.imageEditForm.src = recipe.url
       checkboxes.forEach(checkbox => {
         recipeIngredients.forEach(ri => {
           if (ri.ingredient_id == checkbox.dataset.id){
@@ -260,9 +272,9 @@ class App {
           }
         })
       })
-    } else {
-      this.newRecipeForm.style.display = "none"
-    }
+    // } else {
+    //   this.newRecipeForm.style.display = "none"
+    // }
   }
 
   patchRecipe(event){
@@ -278,7 +290,7 @@ class App {
     })
       .then(res => res.json())
       .then(json => {
-        this.newRecipeForm.style.display = "none"
+        // this.newRecipeForm.style.display = "none"
         this.fetchRecipes()
       })
   }
