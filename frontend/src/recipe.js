@@ -8,19 +8,18 @@ class Recipe{
 
   render(){
     return `
-      <div id="recipe-${this.id}" class="column recipe-card">
+    <div id="recipe-${this.id}" class="column">
+      <div class="flip-container" ontouchstart="this.classList.toggle('hover');">
         <div class="flipper">
 
           <div class="front">
             <div class="ui fluid card">
-
               <div class="image">
-                <img src="#">
+                <img src="https://semantic-ui.com/images/wireframe/image.png"">
               </div>
               <div class="content">
                 <a class="header">${this.name}</a>
               </div>
-
             </div>
           </div>
 
@@ -36,6 +35,8 @@ class Recipe{
               </div>
             </div>
           </div>
+
+        </div>
         </div>
       </div>
     `
