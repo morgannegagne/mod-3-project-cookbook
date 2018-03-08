@@ -2,6 +2,7 @@ class App {
   constructor(){
     this.recipes = []
     this.ingredients = []
+    this.includedSearchIngredients = []
     this.recipesContainer = document.getElementById('recipes')
     this.addRecipeButton = document.getElementById('add-new-recipe')
     this.newRecipeForm = document.getElementById('new-recipe-form')
@@ -15,6 +16,10 @@ class App {
     this.editRecipeButton = document.getElementById('edit-recipe-button')
     this.sortDateButton = document.getElementById('sort-date')
     this.sortNameButton = document.getElementById('sort-a-z')
+    this.recipeSearchBar = document.getElementById('search-recipes')
+    this.addIcon = document.getElementById('add-icon')
+    this.includeIngredientField = document.getElementById("include-ingredient-field")
+    this.includedIngredientsList = document.getElementById('included-ingredients')
     this.addEventListeners()
     this.fetchIngredients()
   }
@@ -44,15 +49,29 @@ class App {
     })
     this.sortNameButton.addEventListener('click', event=>{
       event.target.style["font-weight"] = "bold"
-      this.sortDateButton["font-weight"] = "normal"
+      this.sortDateButton.style["font-weight"] = "normal"
       this.sortRecipesAlphabetically()
-      this.fetchRecipes()
+      this.render()
     })
     this.sortDateButton.addEventListener('click', event=>{
       event.target.style["font-weight"] = "bold"
-      this.sortNameButton["font-weight"] = "normal"
-      // sort by date function
+      this.sortNameButton.style["font-weight"] = "normal"
+      this.sortRecipesByDate()
+      this.render()
     })
+    this.recipeSearchBar.addEventListener('keyup', event => {
+      this.filterRecipesBySearchTerm()
+    })
+    this.addIcon.addEventListener('click', event => {
+      this.addIngredientToIncludedList(event)
+      this.filterRecipesBySearchTerm()
+    })
+    this.includeIngredientField.addEventListener('keyup', event => {
+      if (event.keyCode === 13){
+        this.addIngredientToIncludedList(event)
+        this.filterRecipesBySearchTerm()
+      }
+    });
   }
 
   createRecipeObject(){
@@ -75,12 +94,14 @@ class App {
         checkedValues.push(ingredientObj)
       }
     }
+    this.recipeNameField.value = ""
+    this.recipeUrlField.value = ""
+    this.recipeDirectionsField.value = ""
     return { "recipe": {name: name, ingredients: checkedValues, url: url, directions: directions} }
   }
 
   saveRecipe(event){
     let newRecipeObj = this.createRecipeObject()
-    console.log(newRecipeObj)
     fetch('http://localhost:3000/recipes', {
       method: "post",
       headers: {
@@ -119,6 +140,84 @@ class App {
       }
     })
   }
+  sortRecipesByDate(){
+    this.recipes = this.recipes.sort((a, b) => {
+      let recipeA = a.created_at
+      let recipeB = b.created_at
+      if (recipeA < recipeB){
+        return 1;
+      } else if (recipeA > recipeB){
+        return -1;
+      } else {
+        return 0;
+      }
+    })
+  }
+
+  addIngredientToIncludedList(event){
+    let input = this.includeIngredientField.value
+    let html = `
+      <div class="ui button" data-input="${input}">
+        <i class="trash icon"></i> ${input}
+      <div>
+    `
+    this.includedIngredientsList.innerHTML += html
+    this.includedSearchIngredients.push(input)
+    this.includeIngredientField.value = ''
+    let trashIcons = document.querySelectorAll(".trash.icon")
+    trashIcons.forEach(icon => icon.addEventListener('click', event => {
+        let input = event.target.parentNode.dataset.input
+        let index = this.includedSearchIngredients.findIndex( x => x === input)
+        this.includedSearchIngredients.splice(index, 1);
+        this.filterRecipesBySearchTerm()
+        event.target.parentNode.remove()
+      })
+    )
+  }
+
+  getVisibleRecipes(){
+    let recipeCards = document.querySelectorAll('.recipe-card')
+    let visibleRecipes = []
+    recipeCards.forEach(recipeCard => {
+      let recipeId = recipeCard.dataset.id
+      if (recipeCard.style.display === ''){
+        let recipe = this.recipes.find(recipe => recipe.id == recipeId)
+        visibleRecipes.push(recipe)
+      }
+    })
+    return visibleRecipes
+
+  }
+  filterRecipesByIngredients(){
+    let visibleRecipes = this.getVisibleRecipes()
+    this.includedSearchIngredients.forEach(ingredient => {
+      visibleRecipes.forEach(recipe => {
+        let recipeId = recipe.id
+        let included = false
+        recipe.recipeIngredients.forEach(ri => {
+          if (ri.ingredient_name.toLowerCase().indexOf(ingredient.toLowerCase()) > -1){
+            included = true
+          }
+        })
+        if (!included){
+          document.getElementById(`recipe-${recipeId}`).style.display = "none"
+        }
+      })
+    })
+  }
+
+  filterRecipesBySearchTerm(){
+    let searchTerm = this.recipeSearchBar.value.toLowerCase()
+
+    document.querySelectorAll(".recipe-card").forEach(recipeCard => {
+        if (recipeCard.dataset.name.toLowerCase().indexOf(searchTerm) === -1){
+          recipeCard.style.display = "none"
+        } else {
+          recipeCard.style.display = ""
+        }
+      })
+      this.filterRecipesByIngredients()
+  }
 
   createRecipes(recipesJSON){
     recipesJSON.forEach(recipeJSON => {
@@ -132,7 +231,6 @@ class App {
     })
     this.sortRecipesAlphabetically()
     this.render()
-    let cardDivs = document.querySelectorAll('.recipe-card')
   }
 
   showEditRecipeForm(event){
@@ -168,7 +266,6 @@ class App {
   patchRecipe(event){
     let recipeObj = this.createRecipeObject()
     let id = event.target.dataset.id
-    console.log(recipeObj)
     fetch(`http://localhost:3000/recipes/${id}`,{
       method: 'PATCH',
       headers: {
@@ -247,12 +344,6 @@ class App {
         event.target.checked ? div.style.display = "block" : div.style.display = "none"
       })
     })
-  }
-
-  //Create an IngrCard
-  renderRecipeIngredientCards(){
-    return this.recipes.map(recipe => {
-      return recipe.renderIngredientsCard()})
   }
 
   render(){

@@ -1,5 +1,7 @@
 class RecipesController < ApplicationController
 
+  before_action :set_s3_direct_post, only: [:new, :edit, :create, :update]
+
   def index
     @recipes = Recipe.all
     render json: @recipes
@@ -43,10 +45,12 @@ class RecipesController < ApplicationController
 
   private
 
-  def recipe_params
-    params.require(:recipe).permit(:name, :ingredients, :url, :directions)
-  end
+    def recipe_params
+      params.require(:recipe).permit(:name, :ingredients, :url, :directions)
+    end
 
-
-
+    def set_s3_direct_post
+      @s3_direct_post = S3_BUCKET.presigned_post(key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read')
+    end
+    
 end
