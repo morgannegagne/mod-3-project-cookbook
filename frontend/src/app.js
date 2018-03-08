@@ -60,14 +60,17 @@ class App {
       this.render()
     })
     this.recipeSearchBar.addEventListener('keyup', event => {
-      this.filterRecipes()
+      this.filterRecipesBySearchTerm()
     })
     this.addIcon.addEventListener('click', event => {
       this.addIngredientToIncludedList(event)
+      this.filterRecipesByIngredients()
     })
     this.includeIngredientField.addEventListener('keyup', event => {
       if (event.keyCode === 13){
-        this.addIngredientToIncludedList(event)      }
+        this.addIngredientToIncludedList(event)
+        this.filterRecipesByIngredients()
+      }
     });
   }
 
@@ -99,7 +102,6 @@ class App {
 
   saveRecipe(event){
     let newRecipeObj = this.createRecipeObject()
-    console.log(newRecipeObj)
     fetch('http://localhost:3000/recipes', {
       method: "post",
       headers: {
@@ -153,26 +155,51 @@ class App {
   }
 
   addIngredientToIncludedList(event){
+    let input = this.includeIngredientField.value
     let html = `
-      <div class="ui button">
-        <i class="trash icon"></i> ${this.includeIngredientField.value}
+      <div class="ui button" data-input="${input}">
+        <i class="trash icon"></i> ${input}
       <div>
     `
     this.includedIngredientsList.innerHTML += html
-    this.includedSearchIngredients.push(this.includeIngredientField.value)
+    this.includedSearchIngredients.push(input)
     this.includeIngredientField.value = ''
     let trashIcons = document.querySelectorAll(".trash.icon")
     trashIcons.forEach(icon => icon.addEventListener('click', event => {
+        let input = event.target.parentNode.dataset.input
+        let index = this.includedSearchIngredients.findIndex( x => x === input)
+        this.includedSearchIngredients.splice(index, 1);
+        console.log(this.includedSearchIngredients, "after")
+        this.filterRecipesByIngredients()
         event.target.parentNode.remove()
       })
     )
   }
 
-  filterRecipes(){
-    let searchTerm = this.recipeSearchBar.value.toLowerCase()
-    let recipeCards = document.querySelectorAll('.recipe-card')
+  filterRecipesByIngredients(){
+    let recipeCards = document.querySelectorAll(".recipe-card")
+    recipeCards.forEach(recipeCard => recipeCard.style.display = "none")
+    recipeCards.forEach(recipeCard => recipeCard.style.display = "")
+    this.includedSearchIngredients.forEach(ingredient => {
+      this.recipes.forEach(recipe => {
+        let recipeId = recipe.id
+        let included = false
+        recipe.recipeIngredients.forEach(ri => {
+          if (ri.ingredient_name.toLowerCase().indexOf(ingredient.toLowerCase()) > -1){
+            included = true
+          }
+        })
+        if (!included){
+          document.getElementById(`recipe-${recipeId}`).style.display = "none"
+        }
+      })
+    })
+  }
 
-    recipeCards.forEach(recipeCard => {
+  filterRecipesBySearchTerm(){
+    let searchTerm = this.recipeSearchBar.value.toLowerCase()
+
+    document.querySelectorAll(".recipe-card").forEach(recipeCard => {
       if (recipeCard.dataset.name.toLowerCase().indexOf(searchTerm) > -1){
         recipeCard.style.display = ""
       } else {
@@ -184,7 +211,6 @@ class App {
   createRecipes(recipesJSON){
     recipesJSON.forEach(recipeJSON => {
       let recipe = new Recipe(recipeJSON)
-      console.log(recipe)
       let ingredients = recipeJSON.recipe_ingredients
       ingredients.forEach(ingredientJSON => {
         let ingredient = new RecipeIngredient(ingredientJSON)
@@ -229,7 +255,6 @@ class App {
   patchRecipe(event){
     let recipeObj = this.createRecipeObject()
     let id = event.target.dataset.id
-    console.log(recipeObj)
     fetch(`http://localhost:3000/recipes/${id}`,{
       method: 'PATCH',
       headers: {
