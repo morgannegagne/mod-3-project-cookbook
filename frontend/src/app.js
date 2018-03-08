@@ -39,6 +39,7 @@ class App {
       }
     })
     this.submitRecipeButton.addEventListener('click', event=>{
+      console.log(event.target)
       this.saveRecipe(event)
     })
     this.editRecipeButton.addEventListener('click', event=>{
@@ -78,11 +79,11 @@ class App {
     let name = this.recipeNameField.value
     let url = this.recipeUrlField.value
     let directions = this.recipeDirectionsField.value
-
     let inputs = this.ingredientsCheckbox.children
     let checkedValues=[]
     for (let i = 0; i < inputs.length; i++){
-      let checkbox = inputs[i].firstElementChild
+      let checkboxDiv = inputs[i].firstElementChild
+      let checkbox = checkboxDiv.firstElementChild
       if (checkbox.checked){
         let ingredientObj = {}
         let id = checkbox.dataset.id
@@ -102,8 +103,9 @@ class App {
 
   saveRecipe(event){
     let newRecipeObj = this.createRecipeObject()
+    console.log(newRecipeObj)
     fetch('http://localhost:3000/recipes', {
-      method: "post",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accepts: "applicatin/json"

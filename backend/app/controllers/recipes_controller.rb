@@ -1,6 +1,6 @@
 class RecipesController < ApplicationController
 
-  before_action :set_s3_direct_post, only: [:new, :edit, :create, :update]
+  # before_action :set_s3_direct_post, only: [:new, :edit, :create, :update]
 
   def index
     @recipes = Recipe.all
@@ -16,8 +16,10 @@ class RecipesController < ApplicationController
     @recipe = Recipe.new(recipe_params)
     if @recipe.save
       ingredients = params[:recipe][:ingredients]
-      ingredients.each do |ingredient|
-        RecipeIngredient.create(recipe_id: @recipe.id, ingredient_id: ingredient[:id], amount: ingredient[:amount], measure: ingredient[:measure])
+      if ingredients
+        ingredients.each do |ingredient|
+          RecipeIngredient.create(recipe_id: @recipe.id, ingredient_id: ingredient[:id], amount: ingredient[:amount], measure: ingredient[:measure])
+      end
       end
       render json: @recipe
     else
@@ -49,8 +51,8 @@ class RecipesController < ApplicationController
       params.require(:recipe).permit(:name, :ingredients, :url, :directions)
     end
 
-    def set_s3_direct_post
-      @s3_direct_post = S3_BUCKET.presigned_post(key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read')
-    end
-    
+    # def set_s3_direct_post
+    #   @s3_direct_post = S3_BUCKET.presigned_post(key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read')
+    # end
+
 end

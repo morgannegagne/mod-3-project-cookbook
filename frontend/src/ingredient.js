@@ -8,12 +8,10 @@ class Ingredient{
   render(){
     return `
   <div class="four wide column">
-  <div class="field">
-    <div class="ui checkbox">
+    <div class="field ui checkbox">
       <input id="${this.id}" type="checkbox" name="ingredients" data-id="${this.id}" class="ingredient-checkbox" tabindex="0">
       <label for="${this.id}">${this.name}</label>
     </div>
-</div>
 
       <div id="amounts-measures-${this.id}" style="display: none">
       <div class="field ui mini input">
