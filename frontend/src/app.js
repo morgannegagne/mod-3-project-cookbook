@@ -64,12 +64,12 @@ class App {
     })
     this.addIcon.addEventListener('click', event => {
       this.addIngredientToIncludedList(event)
-      this.filterRecipesByIngredients()
+      this.filterRecipesBySearchTerm()
     })
     this.includeIngredientField.addEventListener('keyup', event => {
       if (event.keyCode === 13){
         this.addIngredientToIncludedList(event)
-        this.filterRecipesByIngredients()
+        this.filterRecipesBySearchTerm()
       }
     });
   }
@@ -169,19 +169,29 @@ class App {
         let input = event.target.parentNode.dataset.input
         let index = this.includedSearchIngredients.findIndex( x => x === input)
         this.includedSearchIngredients.splice(index, 1);
-        console.log(this.includedSearchIngredients, "after")
-        this.filterRecipesByIngredients()
+        this.filterRecipesBySearchTerm()
         event.target.parentNode.remove()
       })
     )
   }
 
+  getVisibleRecipes(){
+    let recipeCards = document.querySelectorAll('.recipe-card')
+    let visibleRecipes = []
+    recipeCards.forEach(recipeCard => {
+      let recipeId = recipeCard.dataset.id
+      if (recipeCard.style.display === ''){
+        let recipe = this.recipes.find(recipe => recipe.id == recipeId)
+        visibleRecipes.push(recipe)
+      }
+    })
+    return visibleRecipes
+
+  }
   filterRecipesByIngredients(){
-    let recipeCards = document.querySelectorAll(".recipe-card")
-    recipeCards.forEach(recipeCard => recipeCard.style.display = "none")
-    recipeCards.forEach(recipeCard => recipeCard.style.display = "")
+    let visibleRecipes = this.getVisibleRecipes()
     this.includedSearchIngredients.forEach(ingredient => {
-      this.recipes.forEach(recipe => {
+      visibleRecipes.forEach(recipe => {
         let recipeId = recipe.id
         let included = false
         recipe.recipeIngredients.forEach(ri => {
@@ -200,12 +210,13 @@ class App {
     let searchTerm = this.recipeSearchBar.value.toLowerCase()
 
     document.querySelectorAll(".recipe-card").forEach(recipeCard => {
-      if (recipeCard.dataset.name.toLowerCase().indexOf(searchTerm) > -1){
-        recipeCard.style.display = ""
-      } else {
-        recipeCard.style.display = "none"
-      }
-    })
+        if (recipeCard.dataset.name.toLowerCase().indexOf(searchTerm) === -1){
+          recipeCard.style.display = "none"
+        } else {
+          recipeCard.style.display = ""
+        }
+      })
+      this.filterRecipesByIngredients()
   }
 
   createRecipes(recipesJSON){
