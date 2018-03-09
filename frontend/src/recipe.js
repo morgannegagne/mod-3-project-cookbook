@@ -24,17 +24,17 @@ class Recipe{
                 </div>
               </div>
               <div class="content">
-                <a class="header">${this.name}</a>
+                <a class="header" style="font-family: 'Poller One', cursive;">${this.name}</a>
               </div>
             </div>
           </div>
 
           <div class="back">
             <div class="ui fluid card">
-              <div class="content"><a class="header">${this.name}</a></div>
+              <div class="content"><a class="header" style="font-family: 'Poller One', cursive;">${this.name}</a>
               <ul id="ingredient-list"> ${this.renderIngredients().join('')}</ul>
-              <h4 dividing header style="padding-left: 5px"> Directions </h4>
-              <p style="padding-left: 10px"> ${this.directions} </p>
+              <h4 dividing header">Directions</h4>
+              <p>${this.directions}</p></div>
               <div class="extra content">
                 <div class="ui two buttons">
                   <div data-id="${this.id}" class="ui basic green button edit-button">Edit</div>

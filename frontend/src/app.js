@@ -219,8 +219,9 @@ class App {
     let searchTerm = this.recipeSearchBar.value.toLowerCase()
 
     document.querySelectorAll(".recipe-card").forEach(recipeCard => {
-      debugger;
-        if (recipeCard.dataset.name.toLowerCase().indexOf(searchTerm) === -1){
+        let recipeCardName = recipeCard.dataset.name.toLowerCase().split(" ")
+        // debugger;
+        if ((recipeCardName[0][0] !== searchTerm && recipeCardName[1][0] !== searchTerm) && searchTerm !== ""){
           recipeCard.style.display = "none"
         } else {
           recipeCard.style.display = ""
