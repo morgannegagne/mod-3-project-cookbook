@@ -219,13 +219,21 @@ class App {
     let searchTerm = this.recipeSearchBar.value.toLowerCase()
 
     document.querySelectorAll(".recipe-card").forEach(recipeCard => {
-        let recipeCardName = recipeCard.dataset.name.toLowerCase().split(" ")
-        // debugger;
-        if ((recipeCardName[0][0] !== searchTerm && recipeCardName[1][0] !== searchTerm) && searchTerm !== ""){
-          recipeCard.style.display = "none"
-        } else {
+        let recipeCardNames = recipeCard.dataset.name.toLowerCase().split(" ")
+        console.log(recipeCardNames)
+        let visible = false;
+        recipeCardNames.forEach(recipeCardName => {
+          if ((recipeCardName.startsWith(searchTerm)) || searchTerm === ""){
+            visible = true;
+          }
+        })
+
+        if (visible) {
           recipeCard.style.display = ""
+        } else {
+          recipeCard.style.display = "none"
         }
+
       })
       this.filterRecipesByIngredients()
   }
