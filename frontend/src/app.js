@@ -353,7 +353,22 @@ class App {
       body: JSON.stringify(ingredientObj)
     })
       .then(res => res.json())
-      .then(json => this.fetchIngredients())
+      .then(json => {
+        // this.fetchIngredients()
+        let addedIngredient = new Ingredient(json)
+        this.ingredients.push(addedIngredient)
+        let ingredientHTML = addedIngredient.render()
+        let wrapper = document.createElement('div')
+        wrapper.innerHTML = ingredientHTML
+        let addCheckbox = wrapper.firstChild
+        let checkboxInput = addCheckbox.nextSibling.querySelector(".ingredient-checkbox")
+        this.ingredientsCheckbox.appendChild(addCheckbox.nextSibling)
+        checkboxInput.addEventListener('click', event => {
+          let id = event.target.dataset.id
+          let div = document.getElementById(`amounts-measures-${id}`)
+          event.target.checked ? div.style.display = "block" : div.style.display = "none"
+        })
+      })
   }
 
   renderIngredients(){
